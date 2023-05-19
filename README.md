@@ -6,7 +6,7 @@ You will learn the different steps in the automation process and how to troubles
 
 All robots that will be developed on this course will be a `sub-folder`.
 
-# Robot No 1: Robot-order
+# Robot No 1: Order-robot
 Automate the processing of ordering custom robots online
 
 [Visit the online robot e-commerce to know how it works](https://robotsparebinindustries.com/#/robot-order).
