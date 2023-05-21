@@ -10,6 +10,7 @@ from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from RPA.Tables import Tables
 from RPA.HTTP import HTTP
+from RPA.PDF import PDF
 import time
 
 browser = Selenium()
@@ -37,6 +38,29 @@ def close_the_annoying_modal():
     """ Close the modal pop up after open the robot order website """
     modal_button = browser.find_element("css:button.btn-dark")
     browser.click_button(modal_button)
+ 
+
+def store_the_receipt_as_pdf_and_embed_the_robot(order_number):
+    """ Create a PDF receipt"""
+    # Get the receipt element
+    try:
+        receipt_element = browser.find_element("css:div#receipt")
+        pdf = PDF()
+        pdf.html_to_pdf(receipt_element.get_attribute("outerHTML"), f"output/receipts/{order_number}.pdf")
+
+        # take screenshot of the robot
+        robot_screenshot = browser.find_element("css:div#robot-preview-image") 
+        browser.screenshot(robot_screenshot, filename=f"output/robot_images/{order_number}.png")
+        
+        # create new receipt pdf with both contents
+        pdf.add_files_to_pdf(files=[f"output/receipts/{order_number}.pdf", 
+                                     f"output/robot_images/{order_number}.png"],
+                                     target_document=f"output/receipts/{order_number}.pdf")
+    except Exception as e:
+        print(e)
+        pass
+
+    # embed th robot to the receipt
 
 
 
@@ -69,16 +93,19 @@ def fill_the_form_and_submit(order):
         submit_order_button = browser.find_element("//button[@id='order']")
         browser.click_element(submit_order_button)
 
+        #time.sleep(5)
+
+        # Store the order receipt as a PDF and Emmbed the robot image to receipt PDF
+        store_the_receipt_as_pdf_and_embed_the_robot(order_number=order['Order number']) 
+
         # Go back to s
         back_to_new_order = browser.find_element("//button[@id='order-another']")
         browser.click_button(back_to_new_order)
 
-        time.sleep(5)
-
         # Close the annoying modal
         close_the_annoying_modal()
-        
-        time.sleep(5)        
+
+        time.sleep(3)        
     except:
         pass
     
