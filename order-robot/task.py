@@ -11,6 +11,7 @@ from RPA.Excel.Files import Files
 from RPA.Tables import Tables
 from RPA.HTTP import HTTP
 from RPA.PDF import PDF
+from RPA.Archive import Archive
 import time
 
 browser = Selenium()
@@ -41,7 +42,10 @@ def close_the_annoying_modal():
  
 
 def store_the_receipt_as_pdf_and_embed_the_robot(order_number):
-    """ Create a PDF receipt"""
+    """ 
+        Create a PDF receipt
+        Documentation: https://robocorp.com/docs/libraries/rpa-framework/rpa-pdf/keywords#template-html-to-pdf
+    """
     # Get the receipt element
     try:
         receipt_element = browser.find_element("css:div#receipt")
@@ -50,17 +54,15 @@ def store_the_receipt_as_pdf_and_embed_the_robot(order_number):
 
         # take screenshot of the robot
         robot_screenshot = browser.find_element("css:div#robot-preview-image") 
-        browser.screenshot(robot_screenshot, filename=f"output/robot_images/{order_number}.png")
+        browser.screenshot(robot_screenshot, filename=f"output/receipts/{order_number}.png")
         
         # create new receipt pdf with both contents
         pdf.add_files_to_pdf(files=[f"output/receipts/{order_number}.pdf", 
-                                     f"output/robot_images/{order_number}.png"],
+                                     f"output/receipts/{order_number}.png"],
                                      target_document=f"output/receipts/{order_number}.pdf")
     except Exception as e:
         print(e)
         pass
-
-    # embed th robot to the receipt
 
 
 
@@ -73,7 +75,7 @@ def fill_the_form_and_submit(order):
         browser.select_from_list_by_value(robot_head, f"{order['Head']}")
 
         # Select the robot body
-        # https://robocorp.com/docs/libraries/rpa-framework/rpa-browser-selenium/keywords#select-radio-button
+        # Documentation: https://robocorp.com/docs/libraries/rpa-framework/rpa-browser-selenium/keywords#select-radio-button
         browser.select_radio_button(group_name="body", value=f"{order['Body']}")
 
         # Fill the robot leg
@@ -114,9 +116,8 @@ def fill_the_form_and_submit(order):
 
 def read_the_data_from_the_downloaded_excel_file():
     """ Read orders from the downloaded excel file and submit 
-        view more details here https://robocorp.com/docs/libraries/rpa-framework/rpa-tables
+        Documentation:https://robocorp.com/docs/libraries/rpa-framework/rpa-tables
     """
-    #time.sleep(10)
     library = Tables()
     orders = library.read_table_from_csv("orders.csv")
 
@@ -127,7 +128,12 @@ def read_the_data_from_the_downloaded_excel_file():
 
 
 def archive_out_put():
-    pass
+    """ 
+        Create zip for the receipt folder 
+        link to documentation https://robocorp.com/docs/libraries/rpa-framework/rpa-archive/keywords#archive-folder-with-zip
+    """
+    zipper = Archive()
+    zipper.archive_folder_with_zip(folder="output/receipts", archive_name="receipt.zip")
 
 
 
@@ -137,8 +143,8 @@ def main():
         close_the_annoying_modal()
         get_orders()
         read_the_data_from_the_downloaded_excel_file()
+        archive_out_put()
     finally:
-        #time.sleep(30)
         browser.close_all_browsers()
 
 if __name__ == "__main__":
