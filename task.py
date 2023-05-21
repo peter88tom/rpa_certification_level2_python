@@ -133,7 +133,7 @@ def archive_out_put():
         link to documentation https://robocorp.com/docs/libraries/rpa-framework/rpa-archive/keywords#archive-folder-with-zip
     """
     zipper = Archive()
-    zipper.archive_folder_with_zip(folder="output/receipts", archive_name="receipt.zip")
+    zipper.archive_folder_with_zip(folder="output/receipts", archive_name="output/receipt.zip")
 
 
 
