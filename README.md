@@ -21,5 +21,3 @@ Once you understand how it works, Automate it while considering the following:
 - The robot should be able to complete all the orders even when there are techinical failures with the robot order website.
 - The robot should be available in public `Github` repository.
 - It should be possible to get the robot from public Github repo and run it without manual setup.
-
-
