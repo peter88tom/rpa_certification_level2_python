@@ -19,9 +19,7 @@ data_url = "https://robotsparebinindustries.com/orders.csv"
 def open_the_robot_orders_web():
     """ Open a browser and vist the order application """
     browser.open_available_browser(url)
-    time.sleep(30)
-
-
+    
 
 def get_orders():
     """ 
@@ -36,7 +34,8 @@ def get_orders():
 
 def close_the_annoying_modal():
     """ Close the modal pop up after open the robot web """
-    modal_button = browser.find_element("css:div.alert-buttons")
+    modal_button = browser.find_element("css:button.btn-dark")
+    browser.click_button(modal_button)
 
 
 
@@ -59,8 +58,10 @@ def archive_out_put():
 def main():
     try:
         open_the_robot_orders_web()
+        close_the_annoying_modal()
         get_orders()
     finally:
+        time.sleep(30)
         browser.close_all_browsers()
 
 if __name__ == "__main__":
